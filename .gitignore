@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.tmp/
+test-results/
+playwright-report/
+data/shares.json
+tsconfig.tsbuildinfo
+.env
+.env.*
+npm-debug.log*
