@@ -56,6 +56,36 @@ function escapeHtml(value: string) {
     .replace(/'/g, '&#39;');
 }
 
+function highlightCode(source: string, lang: string) {
+  if (lang && hljs.getLanguage(lang)) {
+    try {
+      return hljs.highlight(source, { language: lang }).value;
+    } catch {
+      return escapeHtml(source);
+    }
+  }
+
+  return escapeHtml(source);
+}
+
+function renderCodeFrame(source: string, lang = '') {
+  const language = lang.trim().split(/\s+/)[0] || '';
+  const highlighted = highlightCode(source, language);
+
+  return [
+    '<div class="code-frame" style="margin:22px 0;border-radius:12px;overflow:hidden;background:#383a42;box-shadow:0 2px 10px rgba(0,0,0,0.16)">',
+    '<div class="code-dots" style="display:flex;align-items:center;gap:7px;padding:11px 13px;background:#2a2c33;border-bottom:1px solid #1f2128">',
+    '<span style="width:12px;height:12px;border-radius:50%;background:#ff5f56;display:inline-block"></span>',
+    '<span style="width:12px;height:12px;border-radius:50%;background:#ffbd2e;display:inline-block"></span>',
+    '<span style="width:12px;height:12px;border-radius:50%;background:#27c93f;display:inline-block"></span>',
+    '</div>',
+    '<pre style="margin:0;padding:18px;overflow-x:auto;background:#383a42;line-height:1.65"><code style="display:block;margin:0;padding:0;background:transparent !important;color:#abb2bf !important;border:0;font-family:&quot;SF Mono&quot;,Monaco,&quot;Cascadia Code&quot;,Consolas,monospace;font-size:14px;line-height:1.65;white-space:pre">',
+    highlighted,
+    '</code></pre>',
+    '</div>\n'
+  ].join('');
+}
+
 export function preprocessMarkdown(content: string) {
   let processed = String(content || '').replace(/\uE200cite\uE202[^\uE201]*\uE201/g, '');
   processed = processed.replace(/^[ ]{0,3}(\*[ ]*\*[ ]*\*[\* ]*)[ \t]*$/gm, '***');
@@ -74,30 +104,20 @@ export function createMarkdownParser() {
   const md = new MarkdownIt({
     html: false,
     linkify: true,
-    typographer: false,
-    highlight(source, lang) {
-      if (lang && mermaidLanguages.has(lang)) {
-        return `<div class="mermaid">${escapeHtml(source)}</div>`;
-      }
-
-      let code = escapeHtml(source);
-      if (lang && hljs.getLanguage(lang)) {
-        try {
-          code = hljs.highlight(source, { language: lang }).value;
-        } catch {
-          code = escapeHtml(source);
-        }
-      }
-
-      return [
-        '<div class="code-frame">',
-        '<div class="code-dots"><span></span><span></span><span></span></div>',
-        `<pre><code>${code}</code></pre>`,
-        '</div>'
-      ].join('');
-    }
+    typographer: false
   });
 
+  md.renderer.rules.fence = (tokens, index) => {
+    const token = tokens[index];
+    const info = token.info ? md.utils.unescapeAll(token.info).trim() : '';
+    const lang = info.split(/\s+/)[0] || '';
+    if (lang && mermaidLanguages.has(lang)) {
+      return `<div class="mermaid">${escapeHtml(token.content)}</div>\n`;
+    }
+
+    return renderCodeFrame(token.content, lang);
+  };
+  md.renderer.rules.code_block = (tokens, index) => renderCodeFrame(tokens[index].content);
   md.renderer.rules.table_open = () => '<section class="mk-table-wrap"><table>';
   md.renderer.rules.table_close = () => '</table></section>';
   return md;
@@ -197,6 +217,7 @@ export function applyThemeStyles(html: string, themeId: string) {
     if (selector === 'container') return;
     doc.querySelectorAll(selector).forEach((element) => {
       if (element.tagName === 'IMG' && element.closest('.image-grid')) return;
+      if ((selector === 'pre' || selector === 'code') && element.closest('.code-frame')) return;
       const existing = element.getAttribute('style') || '';
       element.setAttribute('style', `${existing}; ${style}`.trim());
     });

@@ -23,6 +23,7 @@ const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 const dataDir = path.resolve(rootDir, 'data');
 const defaultDataFile = path.resolve(dataDir, 'shares.json');
+const defaultMaxContentChars = 1_500_000;
 
 type PasswordResolution = {
   password: string;
@@ -47,6 +48,13 @@ export function resolveListPassword(env: NodeJS.ProcessEnv = process.env): Passw
 
 export function resolveHost(env: NodeJS.ProcessEnv = process.env) {
   return env.HOST || (env.NODE_ENV === 'production' ? '0.0.0.0' : '127.0.0.1');
+}
+
+export function resolveMaxContentChars(value: unknown = process.env.SHARE_MAX_CHARS) {
+  if (value === undefined || value === null || value === '') return defaultMaxContentChars;
+  const parsed = typeof value === 'number' ? value : Number(String(value).trim());
+  if (!Number.isFinite(parsed) || parsed <= 0) return defaultMaxContentChars;
+  return Math.floor(parsed);
 }
 
 export class ShareStore {
@@ -124,7 +132,7 @@ export function createShareApp(options: ShareServerOptions = {}) {
   const app = express();
   const store = new ShareStore(options.dataFile);
   const listPassword = options.listPassword ?? resolveListPassword().password;
-  const maxContentChars = options.maxContentChars ?? Number(process.env.SHARE_MAX_CHARS || 1_500_000);
+  const maxContentChars = resolveMaxContentChars(options.maxContentChars ?? process.env.SHARE_MAX_CHARS);
   const rateBuckets = new Map<string, { count: number; resetAt: number }>();
 
   app.use(express.json({ limit: '8mb' }));

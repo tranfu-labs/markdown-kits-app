@@ -203,6 +203,7 @@ textarea:focus-visible {
 .theme-list {
   display: flex;
   flex: 1 1 auto;
+  min-width: 0;
   align-items: center;
   gap: 8px;
   overflow-x: auto;
@@ -356,6 +357,13 @@ textarea:focus-visible {
 }
 
 .preview-toolbar {
+  flex-wrap: wrap;
+}
+
+.preview-actions {
+  flex: 1 1 420px;
+  min-width: 0;
+  justify-content: flex-end;
   flex-wrap: wrap;
 }
 

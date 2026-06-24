@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { afterEach, describe, expect, it } from 'vitest';
-import { createShareApp, resolveHost, resolveListPassword } from '../server/index';
+import { createShareApp, resolveHost, resolveListPassword, resolveMaxContentChars } from '../server/index';
 
 type TestServer = {
   baseUrl: string;
@@ -14,12 +14,12 @@ type TestServer = {
 
 const servers: TestServer[] = [];
 
-async function createTestServer() {
+async function createTestServer(options: { maxContentChars?: number } = {}) {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'markdown-kits-'));
   const app = createShareApp({
     dataFile: path.join(dir, 'shares.json'),
     listPassword: 'secret',
-    maxContentChars: 1_500_000
+    maxContentChars: options.maxContentChars ?? 1_500_000
   });
   const server: Server = createServer(app);
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
@@ -59,6 +59,19 @@ describe('share API', () => {
     expect(resolveListPassword({ NODE_ENV: 'development' }).password).toBe('dev-password');
     expect(resolveHost({ NODE_ENV: 'production' })).toBe('0.0.0.0');
     expect(resolveHost({ NODE_ENV: 'development' })).toBe('127.0.0.1');
+    expect(resolveMaxContentChars('2500')).toBe(2500);
+    expect(resolveMaxContentChars('not-a-number')).toBe(1_500_000);
+    expect(resolveMaxContentChars(0)).toBe(1_500_000);
+  });
+
+  it('enforces the configured share size limit', async () => {
+    const server = await createTestServer({ maxContentChars: 12 });
+
+    const accepted = await createShare(server, '# ok');
+    expect(accepted.response.status).toBe(201);
+
+    const rejected = await createShare(server, '# too large\n\nbody');
+    expect(rejected.response.status).toBe(413);
   });
 
   it('does not lose shares during concurrent creates', async () => {

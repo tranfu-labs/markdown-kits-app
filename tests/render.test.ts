@@ -82,6 +82,32 @@ describe('render core', () => {
     expect(html).toContain('data:image/svg+xml');
   });
 
+  it('keeps fenced code blocks separate from inline code theme styles', async () => {
+    const html = await renderMarkdown(
+      [
+        '正文里的 `inline` 代码仍然使用主题样式。',
+        '',
+        '```markdown',
+        '品牌信息：{填写品牌名，例如：XX AI Lab / Brand Studio}',
+        '',
+        '主题或内容：',
+        '{在这里输入一个标题、主题、课程内容、产品介绍、文章段落、脚本大纲等}',
+        '```'
+      ].join('\n'),
+      'clay-notes'
+    );
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const frame = doc.querySelector('.code-frame');
+    const blockCode = frame?.querySelector('code');
+    const inlineCode = doc.querySelector('p code');
+
+    expect(frame).not.toBeNull();
+    expect(doc.querySelector('pre > code > .code-frame')).toBeNull();
+    expect(blockCode?.getAttribute('style')).toContain('background:transparent');
+    expect(blockCode?.getAttribute('style')).not.toContain('color-mix');
+    expect(inlineCode?.getAttribute('style')).toContain('color-mix');
+  });
+
   it('extracts a stable history title', () => {
     expect(extractTitle('# **Title**')).toBe('Title');
     expect(extractTitle('plain content body')).toBe('plain content body');
