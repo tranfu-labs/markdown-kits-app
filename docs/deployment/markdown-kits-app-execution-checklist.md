@@ -49,10 +49,10 @@ This document is the working checklist for taking the current local project to a
 - Production environment variables are documented without real secrets.
 - CI runs at least `npm ci` and `npm run check`.
 - Local checks pass before deployment.
+- Docker Compose builds the image, starts a healthy container, and verifies persistence across restart.
 - Coolify deployment is started from the company repository.
 - The Lark Wiki deployment table is updated while deployment is in progress and after completion.
 - Production URL opens and core flows work.
-- Docker CLI is installed locally, but the Docker daemon was not running during local verification, so image build verification remains pending.
 
 ## Execution Checklist
 
@@ -128,6 +128,10 @@ This document is the working checklist for taking the current local project to a
   - Verify: `PORT`, Dockerfile `EXPOSE`, compose `expose`, and the Express listen port all align.
 - [x] Add a healthcheck that clears proxy variables before checking localhost.
   - Verify: healthcheck command starts with `HTTP_PROXY= HTTPS_PROXY= http_proxy= https_proxy=`.
+- [x] Build and run the Coolify-style Compose service locally.
+  - Verify: `LIST_PAGE_PASSWORD=dummy docker compose -f compose.yml up -d --build` builds successfully and the service becomes healthy.
+- [x] Verify container runtime behavior.
+  - Verify: container-internal checks confirmed `/`, `/api/health`, `POST /api/share`, `GET /api/share/:id`, and persisted share data after container restart.
 
 ### 7. Health Endpoint
 
