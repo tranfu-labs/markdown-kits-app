@@ -1,8 +1,8 @@
-# Markdown Kits
+# Markdown Kits App
 
 ## 中文
 
-Markdown Kits 是一个面向微信公众号发布的 Markdown 排版工具。它支持实时预览、主题样式内联、本地图片处理、复制到公众号、短链分享和分享管理。
+Markdown Kits App 是一个面向微信公众号发布的 Markdown 排版工具。它支持实时预览、主题样式内联、本地图片处理、复制到公众号、短链分享和分享管理。
 
 ### 功能
 
@@ -33,15 +33,25 @@ npm run check
 npm run test:e2e
 ```
 
+### 生产运行
+
+```bash
+npm run build
+npm run start
+```
+
 ### 生产环境变量
 
+- `NODE_ENV`: 生产环境设置为 `production`
+- `HOST`: 生产环境设置为 `0.0.0.0`
+- `PORT`: 服务监听端口，默认 `8787`
 - `LIST_PAGE_PASSWORD`: 分享管理页密码，生产环境必填
-- `SHARE_DATA_FILE`: 分享数据文件路径，可选
-- `SHARE_MAX_CHARS`: 单条分享内容字符上限，可选
+- `SHARE_DATA_FILE`: 分享数据文件路径，可选，Coolify 部署建议 `/app/data/shares.json`
+- `SHARE_MAX_CHARS`: 单条分享内容字符上限，可选，默认 `1500000`
 
 ## English
 
-Markdown Kits is a Markdown layout editor for WeChat Official Account publishing. It provides live preview, inline article themes, local image handling, WeChat-ready HTML copy, share links, and share management.
+Markdown Kits App is a Markdown layout editor for WeChat Official Account publishing. It provides live preview, inline article themes, local image handling, WeChat-ready HTML copy, share links, and share management.
 
 ### Features
 
@@ -72,8 +82,18 @@ npm run check
 npm run test:e2e
 ```
 
+### Production
+
+```bash
+npm run build
+npm run start
+```
+
 ### Production Environment
 
+- `NODE_ENV`: set to `production`
+- `HOST`: set to `0.0.0.0`
+- `PORT`: service port, defaults to `8787`
 - `LIST_PAGE_PASSWORD`: required password for the share admin page
-- `SHARE_DATA_FILE`: optional share data file path
-- `SHARE_MAX_CHARS`: optional max characters per share
+- `SHARE_DATA_FILE`: optional share data file path, `/app/data/shares.json` is recommended for Coolify
+- `SHARE_MAX_CHARS`: optional max characters per share, defaults to `1500000`

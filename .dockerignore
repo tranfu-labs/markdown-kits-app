@@ -1,0 +1,14 @@
+node_modules
+.git
+dist
+dist-server
+.tmp
+test-results
+playwright-report
+coverage
+data
+output
+tsconfig.tsbuildinfo
+.env
+.env.*
+npm-debug.log*

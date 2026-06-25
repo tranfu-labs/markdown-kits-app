@@ -20,7 +20,8 @@ type ShareListItem = Omit<Share, 'content'> & {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, '..');
+const rootDirCandidate = path.resolve(__dirname, '..');
+const rootDir = path.basename(rootDirCandidate) === 'dist-server' ? path.resolve(rootDirCandidate, '..') : rootDirCandidate;
 const dataDir = path.resolve(rootDir, 'data');
 const defaultDataFile = path.resolve(dataDir, 'shares.json');
 const defaultMaxContentChars = 1_500_000;
@@ -35,6 +36,7 @@ type ShareServerOptions = {
   listPassword?: string;
   maxContentChars?: number;
   serveStatic?: boolean;
+  staticDir?: string;
 };
 
 export function resolveListPassword(env: NodeJS.ProcessEnv = process.env): PasswordResolution {
@@ -151,6 +153,10 @@ export function createShareApp(options: ShareServerOptions = {}) {
     bucket.count += 1;
     return bucket.count <= 30;
   }
+
+  app.get('/api/health', (_req, res) => {
+    res.json({ ok: true });
+  });
 
   app.post('/api/share', async (req, res, next) => {
     try {
@@ -314,9 +320,9 @@ export function createShareApp(options: ShareServerOptions = {}) {
   });
 
   if (options.serveStatic) {
-    const distDir = path.resolve(rootDir, 'dist');
+    const distDir = options.staticDir ?? path.resolve(rootDir, 'dist');
     app.use(express.static(distDir));
-    app.get('*splat', (_req, res) => {
+    app.get('/{*splat}', (_req, res) => {
       res.sendFile(path.resolve(distDir, 'index.html'));
     });
   }

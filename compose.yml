@@ -1,0 +1,27 @@
+services:
+  markdown-kits-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: "8787"
+      LIST_PAGE_PASSWORD: ${LIST_PAGE_PASSWORD:?set LIST_PAGE_PASSWORD in Coolify}
+      SHARE_DATA_FILE: /app/data/shares.json
+      SHARE_MAX_CHARS: "1500000"
+    expose:
+      - "8787"
+    volumes:
+      - markdown-kits-app-data:/app/data
+    healthcheck:
+      test: ["CMD-SHELL", "HTTP_PROXY= HTTPS_PROXY= http_proxy= https_proxy= wget --spider -q http://127.0.0.1:${PORT:-8787}/api/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+
+volumes:
+  markdown-kits-app-data:
+    name: markdown-kits-app-data

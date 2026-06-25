@@ -59,7 +59,7 @@
 ### Share API (`server/index.ts`)
 - 职责边界：负责创建分享、读取分享、删除分享、批量删除、分页/搜索/排序列出分享、TTL 过期校验、列表密码校验、存储占用统计、JSON 文件原子写入和生产静态资源托管。不负责 Markdown 渲染。
 - 入口：`createShareApp()`、`startServer()`、`ShareStore`、`extractTitle()`、`resolveListPassword()`、`resolveHost()`。
-- 上游：浏览器 `fetch`，生产 `tsx server/index.ts`，`tests/server.test.ts`，`tests/e2e/app.spec.ts`。
+- 上游：浏览器 `fetch`，生产 `node dist-server/server/index.js`，`tests/server.test.ts`，`tests/e2e/app.spec.ts`。
 - 下游：Express、Node `fs/promises`、JSON 文件 `data/shares.json` 或 `SHARE_DATA_FILE`。
 - 禁止依赖：不得导入前端 React 组件；生产环境不得回退默认密码；写入分享时必须保留并发队列或等价原子性。
 

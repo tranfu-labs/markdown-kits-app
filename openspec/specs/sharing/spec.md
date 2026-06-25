@@ -22,6 +22,7 @@
 - MUST 在生产环境缺少 `LIST_PAGE_PASSWORD` 时拒绝启动。
 - MUST 在开发环境未设置密码时使用 `dev-password` 并输出提示。
 - MUST 在生产模式下通过 Express 托管 `dist` 并把前端路由回退到 `index.html`。
+- MUST 通过 `GET /api/health` 提供无需鉴权的健康检查，并返回 200。
 
 ## 场景
 1. Given 开发环境未配置密码, When API 启动, Then 列表密码为 `dev-password`。
@@ -31,6 +32,7 @@
 5. Given 分享不存在, When 访问 `/api/share/:id`, Then 返回 404。
 6. Given 分享设置了过去的 `expiresAt`, When 访问 `/api/share/:id`, Then 返回 404。
 7. Given 多条分享存在, When 管理页按标题搜索并批量删除, Then 被选中的分享被删除且列表刷新。
+8. Given 服务已启动, When 访问 `/api/health`, Then 返回 200 且不需要列表密码。
 
 ## 可验证行为
 - 运行 `npm run test -- tests/server.test.ts`、`npm run test:e2e` 或 `npm run check`。

@@ -2,7 +2,7 @@ import { createServer, type Server } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises';
 import { afterEach, describe, expect, it } from 'vitest';
 import { createShareApp, resolveHost, resolveListPassword, resolveMaxContentChars } from '../server/index';
 
@@ -14,12 +14,19 @@ type TestServer = {
 
 const servers: TestServer[] = [];
 
-async function createTestServer(options: { maxContentChars?: number } = {}) {
+async function createTestServer(options: { maxContentChars?: number; serveStatic?: boolean } = {}) {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'markdown-kits-'));
+  const staticDir = path.join(dir, 'dist');
+  if (options.serveStatic) {
+    await mkdir(staticDir, { recursive: true });
+    await writeFile(path.join(staticDir, 'index.html'), '<!doctype html><title>Markdown Kits App</title>');
+  }
   const app = createShareApp({
     dataFile: path.join(dir, 'shares.json'),
     listPassword: 'secret',
-    maxContentChars: options.maxContentChars ?? 1_500_000
+    maxContentChars: options.maxContentChars ?? 1_500_000,
+    serveStatic: options.serveStatic,
+    staticDir
   });
   const server: Server = createServer(app);
   await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
@@ -54,6 +61,28 @@ afterEach(async () => {
 });
 
 describe('share API', () => {
+  it('exposes an unauthenticated health endpoint', async () => {
+    const server = await createTestServer();
+
+    const response = await fetch(`${server.baseUrl}/api/health`);
+    const data = (await response.json()) as { ok: boolean };
+
+    expect(response.status).toBe(200);
+    expect(data.ok).toBe(true);
+  });
+
+  it('serves the production static shell and frontend routes', async () => {
+    const server = await createTestServer({ serveStatic: true });
+
+    const root = await fetch(`${server.baseUrl}/`);
+    const route = await fetch(`${server.baseUrl}/list`);
+
+    expect(root.status).toBe(200);
+    expect(await root.text()).toContain('Markdown Kits App');
+    expect(route.status).toBe(200);
+    expect(await route.text()).toContain('Markdown Kits App');
+  });
+
   it('requires an explicit list password in production', () => {
     expect(() => resolveListPassword({ NODE_ENV: 'production' })).toThrow(/LIST_PAGE_PASSWORD/);
     expect(resolveListPassword({ NODE_ENV: 'development' }).password).toBe('dev-password');

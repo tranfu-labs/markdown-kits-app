@@ -1,5 +1,6 @@
 node_modules/
 dist/
+dist-server/
 .tmp/
 test-results/
 playwright-report/
@@ -7,4 +8,5 @@ data/shares.json
 tsconfig.tsbuildinfo
 .env
 .env.*
+!.env.example
 npm-debug.log*
