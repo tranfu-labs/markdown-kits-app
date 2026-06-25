@@ -40,6 +40,7 @@ This document is the working checklist for taking the current local project to a
 - Production start uses `node dist-server/server/index.js`.
 - Dedicated health endpoint exists at `GET /api/health`.
 - `coolify-deploy` skill is installed locally.
+- Deployment request message is prepared for the Lark chat `Tranfu的AI员工养成记`, but has not been sent because outbound IM requires explicit user confirmation.
 
 ## Done Definition
 
@@ -166,7 +167,7 @@ This document is the working checklist for taking the current local project to a
 
 ### 10. Deployment Request
 
-- [ ] Prepare message for the TRANFU server operations bot.
+- [x] Prepare message for the TRANFU server operations bot.
   - Template:
 
 ```text
@@ -184,6 +185,7 @@ SHARE_MAX_CHARS=1500000
   - Verify: the message contains no real password or secret values.
 - [ ] Send deployment request in the TRANFU group.
   - Verify: operations bot acknowledges the deployment.
+  - Pending explicit approval to send as bot to `Tranfu的AI员工养成记`.
 
 ### 11. Lark Wiki Tracking
 
