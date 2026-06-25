@@ -26,9 +26,9 @@ This document is the working checklist for taking the current local project to a
 ## Current Local State
 
 - Current package name has been updated to `markdown-kits-app`.
-- Current git remote is `https://github.com/BruceL017/markdown-kits.git`.
-- Current remote does not meet the company organization requirement.
-- Current repository name does not end with `-app`.
+- Current git remote is `https://github.com/tranfu-labs/markdown-kits-app.git`.
+- Current remote meets the company organization requirement.
+- Current repository name ends with `-app`.
 - `Dockerfile` exists.
 - `.dockerignore` exists.
 - `compose.yml` exists.
@@ -60,13 +60,13 @@ This document is the working checklist for taking the current local project to a
 
 - [x] Rename project metadata from `markdown-kits` to `markdown-kits-app` where appropriate.
   - Verify: `package.json` has the expected project name and the app still builds.
-- [ ] Create a public repository under the company organization: `tranfu-labs/markdown-kits-app`.
+- [x] Create a public repository under the company organization: `tranfu-labs/markdown-kits-app`.
   - Verify: repository URL is `https://github.com/tranfu-labs/markdown-kits-app`.
-- [ ] Update local git remote from the personal repository to the company repository.
+- [x] Update local git remote from the personal repository to the company repository.
   - Verify: `git remote -v` shows only `https://github.com/tranfu-labs/markdown-kits-app.git` for `origin`.
 - [x] Confirm git author email before any commit.
   - Verify: `git config user.email` prints `253661133+BruceL017@users.noreply.github.com`.
-- [ ] Push the intended deployment branch to the company repository.
+- [x] Push the intended deployment branch to the company repository.
   - Verify: GitHub repository contains the current project files and branch.
 
 ### 2. Server Resource Check
@@ -146,7 +146,7 @@ This document is the working checklist for taking the current local project to a
   - Optional deployment gate:
     - `npm run test:e2e`
   - Verify: workflow passes on the company repository.
-- [ ] Confirm no secrets are committed or printed in CI logs.
+- [x] Confirm no secrets are committed or printed in CI logs.
   - Verify: repository contains no `.env` files or real production credentials.
 
 ### 9. Local Verification Before Deployment
