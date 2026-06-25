@@ -5,7 +5,7 @@
 - Source document: `项目部署方案`
 - Source URL: https://omq113gwol.sg.larksuite.com/wiki/X5ffwnhyVicMmAk3HuYlXk1Ngbf
 - Fetched as: bot
-- Source revision: `954`
+- Source revision: `955`
 - Local project path: `/Users/hkd-xiaobei/Documents/markdown-kits`
 
 This document is the working checklist for taking the current local project to a TranFu/Coolify deployment. It records the decisions already made and the remaining work. Execute items in order unless a later discovery makes the order unsafe.
@@ -40,9 +40,11 @@ This document is the working checklist for taking the current local project to a
 - Production start uses `node dist-server/server/index.js`.
 - Dedicated health endpoint exists at `GET /api/health`.
 - `coolify-deploy` skill is installed locally.
-- Deployment request message is prepared for the Lark chat `Tranfu的AI员工养成记`, but has not been sent because outbound IM requires explicit user confirmation.
+- Deployment request message was sent to the Lark chat `Tranfu的AI员工养成记` as bot.
+- Deployment request message was also sent in the Lark topic `Tranfu AI机会` / `微信公众号排版工具` with an explicit mention of `服务器运维` (`ou_0ef9bd86390662775a486167c77e5b25`).
 - Deployment request text is saved in `docs/deployment/lark-deployment-request.md`.
 - Lark bot send dry-run validated the message request shape for chat ID `oc_0c097efa8e1dd026ed84a61d7a22fe80`.
+- Lark Wiki deployment table contains `markdown-kits-app` with status `🚀 上线中` at source revision `955`.
 
 ## Done Definition
 
@@ -187,16 +189,19 @@ SHARE_MAX_CHARS=1500000
   - Verify: the message contains no real password or secret values.
 - [x] Dry-run the bot message request.
   - Verify: `lark-cli im +messages-send --as bot --chat-id oc_0c097efa8e1dd026ed84a61d7a22fe80 --text ... --dry-run` validates request shape and target `receive_id`.
-- [ ] Send deployment request in the TRANFU group.
+- [x] Send deployment request in the TRANFU group.
   - Verify: operations bot acknowledges the deployment.
-  - Pending explicit approval to send as bot to `Tranfu的AI员工养成记`.
+  - Sent message ID: `om_x100b6cfdbfa1013ce10543e6fa12da4`.
+  - Topic follow-up message ID: `om_x100b6cfe6f52dca8e2cad0a870d24db`.
+  - Topic follow-up target: `Tranfu AI机会` / `微信公众号排版工具`.
 
 ### 11. Lark Wiki Tracking
 
-- [ ] Add `markdown-kits-app` to the Wiki deployment table when deployment starts.
+- [x] Add `markdown-kits-app` to the Wiki deployment table when deployment starts.
   - Status: `🚀 上线中`
   - GitHub link: `https://github.com/tranfu-labs/markdown-kits-app`
   - Verify: table row is visible in the source Wiki.
+  - Verified revision: `955`.
 - [ ] If deployment fails, update status to `🐞 遇到 BUG` and add the blocker in the relevant task notes.
   - Verify: blocker is specific enough to reproduce or escalate.
 - [ ] After deployment passes verification, update status to `✅ 已上线` and add the production URL.
