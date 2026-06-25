@@ -41,6 +41,8 @@ This document is the working checklist for taking the current local project to a
 - Dedicated health endpoint exists at `GET /api/health`.
 - `coolify-deploy` skill is installed locally.
 - Deployment request message is prepared for the Lark chat `Tranfu的AI员工养成记`, but has not been sent because outbound IM requires explicit user confirmation.
+- Deployment request text is saved in `docs/deployment/lark-deployment-request.md`.
+- Lark bot send dry-run validated the message request shape for chat ID `oc_0c097efa8e1dd026ed84a61d7a22fe80`.
 
 ## Done Definition
 
@@ -87,8 +89,8 @@ This document is the working checklist for taking the current local project to a
   - Verify: JSON storage is kept for this single-instance release per `docs/adr/0003-share-json-governance-and-growth-path.md`.
 - [x] If keeping JSON storage, configure persistent storage for the share data file.
   - Verify: `SHARE_DATA_FILE` points to a mounted persistent path such as `/app/data/shares.json`.
-- [ ] If migrating to SQLite first, create a separate implementation plan before deployment packaging.
-  - Verify: migration plan covers schema, data migration, tests, and rollback.
+- [x] If migrating to SQLite first, create a separate implementation plan before deployment packaging.
+  - Verify: not applicable for this release because JSON storage is explicitly retained for the current single-instance deployment.
 
 ### 4. Environment Documentation
 
@@ -183,6 +185,8 @@ SHARE_MAX_CHARS=1500000
 ```
 
   - Verify: the message contains no real password or secret values.
+- [x] Dry-run the bot message request.
+  - Verify: `lark-cli im +messages-send --as bot --chat-id oc_0c097efa8e1dd026ed84a61d7a22fe80 --text ... --dry-run` validates request shape and target `receive_id`.
 - [ ] Send deployment request in the TRANFU group.
   - Verify: operations bot acknowledges the deployment.
   - Pending explicit approval to send as bot to `Tranfu的AI员工养成记`.
