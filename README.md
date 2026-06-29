@@ -45,7 +45,8 @@ npm run start
 - `NODE_ENV`: 生产环境设置为 `production`
 - `HOST`: 生产环境设置为 `0.0.0.0`
 - `PORT`: 服务监听端口，默认 `8787`
-- `LIST_PAGE_PASSWORD`: 分享管理页密码，生产环境必填
+- `LIST_PAGE_PASSWORD`: 分享管理页密码，生产环境必填；Coolify compose 部署时由 `SERVICE_PASSWORD_LIST_PAGE` 注入
+- `SERVICE_PASSWORD_LIST_PAGE`: Coolify magic variable，推荐让 Coolify 自动生成，手动本地测试可用 `openssl rand -hex 32`
 - `SHARE_DATA_FILE`: 分享数据文件路径，可选，Coolify 部署建议 `/app/data/shares.json`
 - `SHARE_MAX_CHARS`: 单条分享内容字符上限，可选，默认 `1500000`
 
@@ -94,6 +95,7 @@ npm run start
 - `NODE_ENV`: set to `production`
 - `HOST`: set to `0.0.0.0`
 - `PORT`: service port, defaults to `8787`
-- `LIST_PAGE_PASSWORD`: required password for the share admin page
+- `LIST_PAGE_PASSWORD`: required password for the share admin page; compose injects it from `SERVICE_PASSWORD_LIST_PAGE` on Coolify
+- `SERVICE_PASSWORD_LIST_PAGE`: Coolify magic variable; let Coolify generate it, or use `openssl rand -hex 32` for local compose testing
 - `SHARE_DATA_FILE`: optional share data file path, `/app/data/shares.json` is recommended for Coolify
 - `SHARE_MAX_CHARS`: optional max characters per share, defaults to `1500000`

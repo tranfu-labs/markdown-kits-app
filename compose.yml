@@ -1,13 +1,11 @@
 services:
   markdown-kits-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/tranfu-labs/markdown-kits-app:latest
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
       PORT: "8787"
-      LIST_PAGE_PASSWORD: ${LIST_PAGE_PASSWORD:?set LIST_PAGE_PASSWORD in Coolify}
+      LIST_PAGE_PASSWORD: ${SERVICE_PASSWORD_LIST_PAGE}
       SHARE_DATA_FILE: /app/data/shares.json
       SHARE_MAX_CHARS: "1500000"
     expose:
