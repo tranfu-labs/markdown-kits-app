@@ -57,7 +57,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: '24'
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -94,6 +94,7 @@ jobs:
           TOKEN: ${{ secrets.COOLIFY_API_TOKEN }}
           BASE:  ${{ secrets.COOLIFY_BASE_URL }}
         run: |
+          # defensive strip: 若 BASE 末尾误带 / 会拼出 //api 导致 Coolify 404
           BASE="${BASE%/}"
           curl -sSL --fail-with-body -X POST \
             -H "Authorization: Bearer $TOKEN" \
