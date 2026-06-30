@@ -5,8 +5,6 @@ services:
       NODE_ENV: production
       HOST: '0.0.0.0'
       PORT: '8787'
-      SERVICE_PASSWORD_64_LIST_PAGE: ''
-      LIST_PAGE_PASSWORD: ${SERVICE_PASSWORD_64_LIST_PAGE}
       SHARE_DATA_FILE: /app/data/shares.json
       SHARE_MAX_CHARS: '1500000'
       SERVICE_FQDN_MARKDOWN_KITS_APP_8787: ''
