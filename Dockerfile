@@ -22,9 +22,9 @@ RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/dist-server ./dist-server
 
-EXPOSE ${PORT}
+EXPOSE 8787
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD HTTP_PROXY= HTTPS_PROXY= http_proxy= https_proxy= wget --spider -q http://127.0.0.1:${PORT:-8787}/api/health || exit 1
+  CMD HTTP_PROXY= HTTPS_PROXY= http_proxy= https_proxy= wget --spider -q http://127.0.0.1:8787/api/health || exit 1
 
 CMD ["node", "dist-server/server/index.js"]

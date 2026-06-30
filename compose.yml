@@ -3,17 +3,18 @@ services:
     image: ghcr.io/tranfu-labs/markdown-kits-app:latest
     environment:
       NODE_ENV: production
-      HOST: 0.0.0.0
+      HOST: "0.0.0.0"
       PORT: "8787"
       LIST_PAGE_PASSWORD: ${SERVICE_PASSWORD_LIST_PAGE}
       SHARE_DATA_FILE: /app/data/shares.json
       SHARE_MAX_CHARS: "1500000"
+      SERVICE_FQDN_MARKDOWN_KITS_APP_8787: ""
     expose:
       - "8787"
     volumes:
       - markdown-kits-app-data:/app/data
     healthcheck:
-      test: ["CMD-SHELL", "HTTP_PROXY= HTTPS_PROXY= http_proxy= https_proxy= wget --spider -q http://127.0.0.1:${PORT:-8787}/api/health || exit 1"]
+      test: ["CMD-SHELL", "HTTP_PROXY= HTTPS_PROXY= http_proxy= https_proxy= wget --spider -q http://127.0.0.1:8787/api/health || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3
